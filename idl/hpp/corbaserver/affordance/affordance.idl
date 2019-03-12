@@ -11,7 +11,7 @@
 
 #ifndef HPP_AFFORDANCE_CORBA_SERVER_IDL
 # define HPP_AFFORDANCE_CORBA_SERVER_IDL
-# include <hpp/corbaserver/common.idl>
+# include <hpp/common.idl>
 module hpp
 {
   typedef sequence<double> doubleSeq;

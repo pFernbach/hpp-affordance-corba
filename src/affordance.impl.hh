@@ -16,7 +16,7 @@
 # include "hpp/corbaserver/problem-solver-map.hh"
 # include "hpp/corbaserver/affordance/fwd.hh"
 
-# include "affordance.hh"
+# include "affordance-idl.hh"
 
 namespace hpp
 {
