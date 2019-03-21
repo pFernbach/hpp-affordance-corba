@@ -16,6 +16,9 @@
 # include <hpp/fcl/math/vec_3f.h>
 # include <hpp/core/fwd.hh>
 # include <hpp/affordance/fwd.hh>
+
+namespace hpp
+{
 namespace fcl {
   template <typename T> class BVHModel;
   class CollisionGeometry;
@@ -23,9 +26,6 @@ namespace fcl {
   class ShapeBase;
   class Triangle;
 }
-
-namespace hpp
-{
   namespace affordanceCorba
   {
     typedef core::ProblemSolver ProblemSolver;
