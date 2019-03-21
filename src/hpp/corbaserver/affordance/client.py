@@ -15,49 +15,24 @@
 # hpp-affordance-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from omniORB import CORBA
-import CosNaming
+from hpp.corbaserver.client import Client as _Parent
+from hpp_idl.hpp.corbaserver.affordance import Afford
 
-from hpp.corbaserver.affordance import Afford
-
-class CorbaError(Exception):
-    """
-    Raised when a CORBA error occurs.
-    """
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-class Client:
+class Client (_Parent):
   """
   Connect and create clients for hpp-affordance library.
   """
-  def __init__(self):
+
+  defaultClients = {
+          'affordance': Afford,
+          }
+
+  def __init__(self, url = None, context = "corbaserver"):
     """
     Initialize CORBA and create default clients.
+    :param url: URL in the IOR, corbaloc, corbalocs, and corbanames formats.
+                For a remote corba server, use
+                url = "corbaloc:iiop:<host>:<port>/NameService"
     """
-    import sys
-    self.orb = CORBA.ORB_init (sys.argv, CORBA.ORB_ID)
-    obj = self.orb.resolve_initial_references("NameService")
-    self.rootContext = obj._narrow(CosNaming.NamingContext)
-    if self.rootContext is None:
-        raise CorbaError ('failed to narrow the root context')
-
-    name = [CosNaming.NameComponent ("hpp", "corbaserver"),
-            CosNaming.NameComponent ("affordanceCorba", "affordance")]
-
-    try:
-        obj = self.rootContext.resolve (name)
-    except CosNaming.NamingContext.NotFound, ex:
-        raise CorbaError ('failed to find affordance service.')
-    try:
-        client = obj._narrow (Afford)
-    except KeyError:
-        raise CorbaError ('invalid service name affordanceCorba')
-
-    if client is None:
-      # This happens when stubs from client and server are not synchronized.
-        raise CorbaError (
-            'failed to narrow client for service affordanceCorba')
-    self.affordance = client
+    self._initOrb (url)
+    self._makeClients ("affordanceCorba", self.defaultClients, context)

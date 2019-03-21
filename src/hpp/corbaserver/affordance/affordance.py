@@ -16,8 +16,8 @@
 # hpp-affordance-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-from hpp.corbaserver.affordance import Client as AffClient
-from hpp.corbaserver import Client as BasicClient
+from hpp.corbaserver.affordance.client import Client as AffClient
+from hpp.corbaserver.client import Client as BasicClient
 
 ## Corba clients to the various servers
 #
