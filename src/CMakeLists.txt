@@ -79,13 +79,6 @@ PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} hpp-util)
 
 INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-
-# search for omniidl
-FIND_PROGRAM(OMNIIDL omniidl)
-IF(${OMNIIDL} STREQUAL OMNIIDL-NOTFOUND)
-  MESSAGE(FATAL_ERROR "cannot find omniidl.")
-ENDIF(${OMNIIDL} STREQUAL OMNIIDL-NOTFOUND)
-
 PYTHON_INSTALL_ON_SITE(
   hpp/corbaserver/affordance corba.py ${PYTHON_SITELIB}
   )
@@ -121,9 +114,14 @@ FOREACH (IDL ${HPP_CORBASERVER_IDL_SOURCES})
     ${CMAKE_CURRENT_BINARY_DIR}/${IDL}_idl.py
     GENERATED=ON
     )
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_CURRENT_BINARY_DIR}/hpp/corbaserver/affordance/__init__.py
+    GENERATED=ON
+    )
   INSTALL(
     FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${IDL}_idl.py
+    ${CMAKE_CURRENT_BINARY_DIR}/hpp/corbaserver/affordance/__init__.py
     DESTINATION ${PYTHON_SITELIB}/hpp/corbaserver/affordance
     )
 ENDFOREACH()
