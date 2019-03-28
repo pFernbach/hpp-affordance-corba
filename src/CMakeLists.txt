@@ -111,9 +111,14 @@ FOREACH (IDL ${HPP_CORBASERVER_IDL_SOURCES})
     ${CMAKE_CURRENT_BINARY_DIR}/${IDL}_idl.py
     GENERATED=ON
     )
+  SET_SOURCE_FILES_PROPERTIES(
+    ${CMAKE_CURRENT_BINARY_DIR}/hpp/corbaserver/affordance/__init__.py
+    GENERATED=ON
+    )
   INSTALL(
     FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${IDL}_idl.py
+    ${CMAKE_CURRENT_BINARY_DIR}/hpp/corbaserver/affordance/__init__.py
     DESTINATION ${PYTHON_SITELIB}/hpp/corbaserver/affordance
     )
 ENDFOREACH()
