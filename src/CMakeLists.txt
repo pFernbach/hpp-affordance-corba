@@ -20,10 +20,6 @@ SET(IDL_SOURCES
   affordance
   )
 
-SET(HPP_CORBASERVER_IDL_SOURCES
-  common
-)
-
 # search for python
 FINDPYTHON()
 
@@ -34,38 +30,36 @@ OMNIIDL_INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/hpp/corbaserver/affordance)
 FOREACH(IDL ${IDL_SOURCES})
-  GENERATE_IDL_CPP (${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance)
-  GENERATE_IDL_PYTHON (${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance)
-  INSTALL(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/${IDL}.hh
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpp/corbaserver/affordance/)
-    INSTALL(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/${IDL}_idl.py
-    DESTINATION ${PYTHON_SITELIB}/hpp/corbaserver/affordance/
+  GENERATE_IDL_CPP (${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance
+    HEADER_SUFFIX -idl.hh)
+  GENERATE_IDL_PYTHON (${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance
+    ENABLE_DOCSTRING
+    STUBS hpp_stubs.affordance
+    ARGUMENTS
+    -Wbmodules=hpp_idl
+    -Wbextern=common:hpp_stubs
     )
+  INSTALL(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${IDL}-idl.hh
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpp/corbaserver/affordance/)
 ENDFOREACH()
-FOREACH(IDL ${HPP_CORBASERVER_IDL_SOURCES})
-  GENERATE_IDL_CPP (${IDL}
-    ${HPP_CORBASERVER_DATAROOTDIR}/idl/hpp/corbaserver
-		)
-	GENERATE_IDL_PYTHON (${IDL}
-	    ${HPP_CORBASERVER_DATAROOTDIR}/idl/hpp/corbaserver
-		)
-ENDFOREACH()
+
+INSTALL(
+  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/hpp_idl/hpp/corbaserver/affordance
+  DESTINATION ${PYTHON_SITELIB}/hpp_idl/hpp/corbaserver)
+INSTALL(
+  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/hpp_stubs/affordance
+  DESTINATION ${PYTHON_SITELIB}/hpp_stubs)
+
 ADD_CUSTOM_TARGET(generate_idl_cpp DEPENDS ${ALL_IDL_CPP_STUBS})
 ADD_CUSTOM_TARGET(generate_idl_python DEPENDS ${ALL_IDL_PYTHON_STUBS})
 
 ADD_LIBRARY(${LIBRARY_NAME}
   SHARED
-  common.hh
-  commonSK.cc
-  affordance.hh
-  affordanceSK.cc
+  ${ALL_IDL_CPP_STUBS}
   affordance.impl.hh
   affordance.impl.cc
-  affordance_idl.py
   server.cc
-  common_idl.py
 )
 
 ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
@@ -81,6 +75,9 @@ INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 PYTHON_INSTALL_ON_SITE(
   hpp/corbaserver/affordance corba.py ${PYTHON_SITELIB}
+  )
+PYTHON_INSTALL_ON_SITE(
+  hpp/corbaserver/affordance __init__.py ${PYTHON_SITELIB}
   )
 PYTHON_INSTALL_ON_SITE(
   hpp/corbaserver/affordance client.py ${PYTHON_SITELIB}
