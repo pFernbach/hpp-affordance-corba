@@ -16,6 +16,7 @@
 # hpp-affordance-corba.  If not, see
 # <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
 from hpp.corbaserver.affordance.client import Client as AffClient
 from hpp.corbaserver.client import Client as BasicClient
 
@@ -181,7 +182,7 @@ class AffordanceTool (object):
         import re
         objNames = self.client.basic.obstacle.getObstacleNames(True,False)
         for name in objNames:
-          print "obs name ", name
+          print("obs name ", name)
           splt = re.split ('/', name)
           if splt[0] == prefix :
             self.analyseObject (name,reduceSizes)
