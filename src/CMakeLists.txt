@@ -20,9 +20,6 @@ SET(IDL_SOURCES
   affordance
   )
 
-# search for python
-FINDPYTHON()
-
 OMNIIDL_INCLUDE_DIRECTORIES(
 		${HPP_CORBASERVER_DATAROOTDIR}/idl
 		${CMAKE_SOURCE_DIR}/idl
