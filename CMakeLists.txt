@@ -22,8 +22,8 @@ SET(CXX_DISABLE_WERROR true)
 
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/idl.cmake)
-INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/hpp.cmake)
+INCLUDE(cmake/hpp/python.cmake)
 
 SET(PROJECT_NAME hpp-affordance-corba)
 SET(PROJECT_DESCRIPTION "Corba server for Humanoid Path Planner Affordance applications")
@@ -33,10 +33,7 @@ SET(CUSTOM_HEADER_DIR hpp/corbaserver/affordance)
 SETUP_HPP_PROJECT ()
 
 # Dependencies
-IF(NOT DEFINED PYTHON_DESIRED_VERSION)
-  SET(PYTHON_DESIRED_VERSION 2.7)
-ENDIF()
-FINDPYTHON(${PYTHON_DESIRED_VERSION} EXACT)
+HPP_FINDPYTHON()
 ADD_REQUIRED_DEPENDENCY("hpp-core >= 3")
 ADD_REQUIRED_DEPENDENCY("hpp-pinocchio >= 3")
 ADD_REQUIRED_DEPENDENCY("omniORB4 >= 4.1.4")
