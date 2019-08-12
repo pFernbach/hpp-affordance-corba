@@ -37,13 +37,6 @@ namespace hpp
 
                 Afford::Afford (const core::ProblemSolverPtr_t& /*problemSolver*/) {}
 
-        void Afford::setProblemSolverMap
-        (hpp::corbaServer::ProblemSolverMapPtr_t psMap)
-        {
-          psMap_ = psMap;
-					resetAffordanceConfig ();
-        }
-
 				void Afford::resetAffordanceConfig() throw (hpp::Error)
 				{
                     problemSolver()->affordanceConfigs.add("Support", vector3_t (0.3,0.3,0.05));

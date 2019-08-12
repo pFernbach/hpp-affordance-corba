@@ -32,6 +32,8 @@ SET(CUSTOM_HEADER_DIR hpp/corbaserver/affordance)
 
 SETUP_HPP_PROJECT ()
 
+LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES cmake_plugin)
+
 # Dependencies
 HPP_FINDPYTHON()
 ADD_REQUIRED_DEPENDENCY("hpp-core >= 3")
