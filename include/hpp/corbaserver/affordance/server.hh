@@ -12,6 +12,7 @@
 # define HPP_AFFORDANCE_CORBA_SERVER_HH
 
 # include <hpp/corba/template/server.hh>
+# include <hpp/corbaserver/server-plugin.hh>
 # include <hpp/corbaserver/affordance/fwd.hh>
 # include <hpp/corbaserver/affordance/config.hh>
 # include "hpp/corbaserver/problem-solver-map.hh"
@@ -25,21 +26,18 @@ namespace hpp
       class Afford;
     } // namespace impl
 
-    class HPP_AFFORDANCE_CORBA_DLLAPI Server
+    class HPP_AFFORDANCE_CORBA_DLLAPI Server : public corbaServer::ServerPlugin
     {
     public:
-      Server (int argc, const char* argv[], bool multiThread = false,
-	      const std::string& poaName = "child");
+      Server (corbaServer::Server* parent);
 
       /// \brief Shutdown CORBA server
       ~Server ();
-      /// Set planner that will be controlled by server
-      void setProblemSolverMap (hpp::corbaServer::ProblemSolverMapPtr_t psMap);
 
       void startCorbaServer(const std::string& contextId,
-			    const std::string& contextKind,
-			    const std::string& objectId,
-			    const std::string& objectKind);
+			    const std::string& contextKind);
+
+      std::string name () const;
 
     private:
       corba::Server <impl::Afford>* impl_;

@@ -20,6 +20,7 @@ SET(IDL_SOURCES
   affordance
   )
 
+INCLUDE(${HPP_CORBASERVER_CMAKE_PLUGIN})
 OMNIIDL_INCLUDE_DIRECTORIES(
 		${HPP_CORBASERVER_DATAROOTDIR}/idl
 		${CMAKE_SOURCE_DIR}/idl
@@ -51,24 +52,17 @@ INSTALL(
 ADD_CUSTOM_TARGET(generate_idl_cpp DEPENDS ${ALL_IDL_CPP_STUBS})
 ADD_CUSTOM_TARGET(generate_idl_python DEPENDS ${ALL_IDL_PYTHON_STUBS})
 
-ADD_LIBRARY(${LIBRARY_NAME}
-  SHARED
+HPP_ADD_SERVER_PLUGIN(affordance-corba
+  SOURCES
   ${ALL_IDL_CPP_STUBS}
   affordance.impl.hh
   affordance.impl.cc
   server.cc
+  PKG_CONFIG_DEPENDENCIES omniORB4 hpp-corbaserver hpp-affordance hpp-template-corba hpp-util
 )
 
-ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_cpp)
-ADD_DEPENDENCIES (${LIBRARY_NAME} generate_idl_python)
-TARGET_LINK_LIBRARIES(${LIBRARY_NAME} hpp-affordance)
-
-PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} hpp-corbaserver)
-PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} hpp-affordance)
-PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} hpp-template-corba)
-PKG_CONFIG_USE_DEPENDENCY(${LIBRARY_NAME} hpp-util)
-
-INSTALL(TARGETS ${LIBRARY_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+ADD_DEPENDENCIES (affordance-corba generate_idl_cpp)
+ADD_DEPENDENCIES (affordance-corba generate_idl_python)
 
 PYTHON_INSTALL_ON_SITE(
   hpp/corbaserver/affordance corba.py ${PYTHON_SITELIB}
@@ -123,7 +117,6 @@ ENDFOREACH()
 
 # Standalone corba server
 ADD_EXECUTABLE (hpp-affordance-server hpp-affordance-corba.cc)
-TARGET_LINK_LIBRARIES (hpp-affordance-server ${LIBRARY_NAME} hpp-affordance)
 
 PKG_CONFIG_USE_DEPENDENCY(hpp-affordance-server hpp-corbaserver)
 PKG_CONFIG_USE_DEPENDENCY(hpp-affordance-server hpp-template-corba)

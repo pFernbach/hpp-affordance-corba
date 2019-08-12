@@ -15,6 +15,7 @@
 # include "hpp/core/problem-solver.hh"
 # include "hpp/corbaserver/problem-solver-map.hh"
 # include "hpp/corbaserver/affordance/fwd.hh"
+# include "hpp/corbaserver/affordance/server.hh"
 
 # include "affordance-idl.hh"
 
@@ -31,9 +32,12 @@ namespace hpp
 
 	      Afford ();
 
-				Afford (const core::ProblemSolverPtr_t& problemSolver);
+				void setServer (Server* server)
+				{
+					server_ = server;
+				}
 
-          void setProblemSolverMap (hpp::corbaServer::ProblemSolverMapPtr_t psMap);
+				Afford (const core::ProblemSolverPtr_t& problemSolver);
 
 				void resetAffordanceConfig() throw (hpp::Error);
 
@@ -85,10 +89,10 @@ namespace hpp
         hpp::Names_t* getAffordanceConfigTypes () throw (hpp::Error);
 
       private:
-          corbaServer::ProblemSolverMapPtr_t psMap_;
+          Server* server_;
           core::ProblemSolverPtr_t problemSolver()
           {
-              return psMap_->selected();
+              return server_->problemSolver();
           }
       }; // class Afford
     } // namespace impl

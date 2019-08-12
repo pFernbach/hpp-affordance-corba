@@ -8,35 +8,52 @@
 //
 // See the COPYING file for more information.
 
+#include "hpp/corbaserver/affordance/server.hh"
+
 #include <hpp/util/exception.hh>
 #include <hpp/util/debug.hh>
-#include "hpp/corbaserver/affordance/server.hh"
+#include <hpp/corbaserver/server.hh>
 #include "affordance.impl.hh"
 
 namespace hpp
 {
   namespace affordanceCorba
   {
-    Server::Server (int argc, const char* argv[], bool multiThread,
-		    const std::string& poaName) :
-      impl_ (new corba::Server <impl::Afford>
-	     (argc, argv, multiThread, poaName)) {}
-    Server::~Server () { delete impl_;}
-    void Server::setProblemSolverMap (hpp::corbaServer::ProblemSolverMapPtr_t psMap)
+    Server::Server (corbaServer::Server* server)
+      : corbaServer::ServerPlugin (server),
+      impl_ (NULL)
+    {}
+
+    Server::~Server ()
     {
-      impl_->implementation ().setProblemSolverMap (psMap);
+      if (impl_) delete impl_;
+    }
+
+    std::string Server::name () const
+    {
+      return "affordance";
     }
 
     /// Start corba server
     void Server::startCorbaServer(const std::string& contextId,
-				  const std::string& contextKind,
-				  const std::string& objectId,
-				  const std::string& objectKind)
+				  const std::string& contextKind)
     {
-      if (impl_->startCorbaServer(contextId, contextKind, objectId, objectKind)
-	  != 0) {
-	HPP_THROW_EXCEPTION (hpp::Exception, "Failed to start corba server.");
+      bool mThd = parent()->multiThread();
+      impl_ = new corba::Server <impl::Afford>   (0, NULL, mThd, "child");
+
+      impl_->implementation ().setServer (this);
+
+      if (impl_->startCorbaServer(contextId, contextKind,
+                                  "affordanceCorba", "affordance") != 0) {
+	HPP_THROW_EXCEPTION (hpp::Exception, "Failed to start affordance corba server.");
       }
+
+      // TODO this a very fragile. It works because startCorbaServer is called
+      // after setProblemSolverMap in hpp::corbaServer::Server::getContext
+      // implementation (file hpp-corbaserver/src/server.cc)
+      impl_->implementation().resetAffordanceConfig();
     }
   } // namespace affordanceCorba
 } // namespace hpp
+
+HPP_CORBASERVER_DEFINE_PLUGIN(hpp::affordanceCorba::Server)
