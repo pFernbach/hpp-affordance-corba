@@ -10,6 +10,7 @@
 
 #include <iostream>
 
+#include <pinocchio/fwd.hpp>
 #include <hpp/util/debug.hh>
 
 #include "hpp/affordance/affordance-extraction.hh"
