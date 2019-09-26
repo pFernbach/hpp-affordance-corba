@@ -17,14 +17,14 @@
 
 from hpp.corbaserver.robot import Robot as Parent
 
-class Robot (Parent):
+
+class Robot(Parent):
     packageName = "hpp-affordance-corba"
     urdfName = "hyq_trunk_large"
     urdfSuffix = ""
     srdfSuffix = ""
 
-    def __init__ (self, robotName, load = True):
-        Parent.__init__ (self, robotName, "freeflyer", load)
+    def __init__(self, robotName, load=True):
+        Parent.__init__(self, robotName, "freeflyer", load)
         self.rightWrist = ""
-        self.leftWrist  = ""
-
+        self.leftWrist = ""

@@ -17,30 +17,33 @@
 # <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
+
 from hpp.corbaserver.affordance.client import Client as AffClient
 from hpp.corbaserver.client import Client as BasicClient
 
-## Corba clients to the various servers
+
+# Corba clients to the various servers
 #
 class CorbaClient:
     """
     Container for corba clients to various interfaces.
     """
-    def __init__ (self):
-        self.basic = BasicClient ()
-        self.affordance = AffClient ()
+    def __init__(self):
+        self.basic = BasicClient()
+        self.affordance = AffClient()
 
-## \brief Load and handle an AffordanceTool for analysis of the environment.
+
+# \brief Load and handle an AffordanceTool for analysis of the environment.
 #
 #  AffordanceTool offers a set of helper functions that combines the affordance
 # analysis on the C++ side with visualisation tools. The objective is to make the
 # analysis tools more intuitive for the user.
-class AffordanceTool (object):
-    ## Constructor
-    def __init__ (self):
-        self.client = CorbaClient ()
+class AffordanceTool(object):
+    # Constructor
+    def __init__(self):
+        self.client = CorbaClient()
 
-    ## \brief Remove an obstacle from outer objects of a joint body.
+    # \brief Remove an obstacle from outer objects of a joint body.
     #
     #  This function also deletes all affordance objects created
     #  for the given obstacle, both from the problem solver and
@@ -50,18 +53,16 @@ class AffordanceTool (object):
     #  \param jointName name of the joint owning the body,
     #  \param collision whether collision with object should be computed,
     #  \param distance whether distance to object should be computed.
-    def removeObstacleFromJoint (self, objectName, jointName, collision,
-                                 distance):
-        self.client.basic.obstacle.removeObstacleFromJoint \
-            (objectName, jointName, collision, distance)
-        return self.deleteAffordances (obstacleName)
+    def removeObstacleFromJoint(self, objectName, jointName, collision, distance):
+        self.client.basic.obstacle.removeObstacleFromJoint(objectName, jointName, collision, distance)
+        return self.deleteAffordances(obstacleName)  # noqa TODO
 
-    ## \brief Reset the current configuration of the given affordance
+    # \brief Reset the current configuration of the given affordance
     #  type requirement to default values.
-    def resetAffordanceConfig (self):
-        self.client.affordance.affordance.resetAffordanceConfig ()
+    def resetAffordanceConfig(self):
+        self.client.affordance.affordance.resetAffordanceConfig()
 
-    ## \brief  changes the default configuration of the given affordance type requirement
+    # \brief  changes the default configuration of the given affordance type requirement
     #
     #  The configuration vector has size 3 and comprises the error margin,
     #  the angle margin for neighbouring triangles and the minimum area,
@@ -69,59 +70,63 @@ class AffordanceTool (object):
     #
     #  \param affType affordance type for which the change is made
     #  \param conf configuration vector of size 3
-    def setAffordanceConfig (self, affType, config):
+    def setAffordanceConfig(self, affType, config):
         return self.client.affordance.affordance.setAffordanceConfig(affType, config)
 
-    ## \brief Returns the configuration of the given affordance type requirement
+    # \brief Returns the configuration of the given affordance type requirement
     #
     #  \param affType affordance type for which the configuration is requested
-    def getAffordanceConfig (self, affType):
+    def getAffordanceConfig(self, affType):
         return self.client.affordance.affordance.getAffordanceConfig(affType)
 
-    ## \brief Changes the error margin used to evaluate the affordance requirement
+    # \brief Changes the error margin used to evaluate the affordance requirement
     #  of a given affordance type
     #
     #  \param affType affordance type for which the change is made
     #  \param margin new value for the error margin
-    def setMargin (self, affType, margin):
-        return self.client.affordance.affordance.setMargin (affType, margin)
+    def setMargin(self, affType, margin):
+        return self.client.affordance.affordance.setMargin(affType, margin)
 
-    ## \brief Changes the angle margin used to evaluate whether neighbouring
+    # \brief Changes the angle margin used to evaluate whether neighbouring
     #  triangles form part of the potential affordance as the current
     #  triangle.
     #
     #  \param affType affordance type for which the change is made
     #  \param nbTriMargin new value for the neighbouring triangle margin
-    def setNeighbouringTriangleMargin (self, affType, nbTriMargin):
-        return self.client.affordance.affordance.setNeighbouringTriangleMargin (affType, nbTriMargin)
+    def setNeighbouringTriangleMargin(self, affType, nbTriMargin):
+        return self.client.affordance.affordance.setNeighbouringTriangleMargin(affType, nbTriMargin)
 
-    ## \brief Changes the minimum area used to evaluate the affordance requirement
+    # \brief Changes the minimum area used to evaluate the affordance requirement
     #   of a given affordance type
     #  \param affType affordance type for which the change is made
     #  \param nimArea new value for the minimum accepted area
-    def setMinimumArea (self, affType, minArea):
-       return self.client.affordance.affordance.setMinimumArea (affType, minArea)
+    def setMinimumArea(self, affType, minArea):
+        return self.client.affordance.affordance.setMinimumArea(affType, minArea)
 
-    ## \brief Analyse all loaded obstacles in the problem solver.
+    # \brief Analyse all loaded obstacles in the problem solver.
     #
     #  All found affordance objects are added to their corresponding
     #  container in problem solver.
-    #  \param reduceSizes : dimension of the reduction applied to the plan (to shrink the borders of each affordances plans)
-    #    The order of the value in the vector correspond to the order of the affordance type creation in affordance.impl.cc : Afford::createOperations ()
-    def analyseAll (self,reduceSizes=[]):
-        return self.client.affordance.affordance.analyseAll (reduceSizes)
+    #  \param reduceSizes : dimension of the reduction applied to the plan (to shrink the borders of each affordances
+    #  plans)
+    #    The order of the value in the vector correspond to the order of the affordance type creation in
+    #    affordance.impl.cc : Afford::createOperations ()
+    def analyseAll(self, reduceSizes=[]):
+        return self.client.affordance.affordance.analyseAll(reduceSizes)
 
-    ## \biref Analyse one object by name
+    # \biref Analyse one object by name
     #
     #  Found affordance objects are added to a container in problem solver.
     #
     #  \param objectName name of the object to analyse.
-    #  \param reduceSizes : dimension of the reduction applied to the plan (to shrink the borders of each affordances plans)
-    #    The order of the value in the vector correspond to the order of the affordance type creation in affordance.impl.cc : Afford::createOperations ()
-    def analyseObject (self, objectName,reduceSizes):
-        return self.client.affordance.affordance.analyseObject (objectName,reduceSizes)
+    #  \param reduceSizes : dimension of the reduction applied to the plan (to shrink the borders of each affordances
+    #  plans)
+    #    The order of the value in the vector correspond to the order of the affordance type creation in
+    #    affordance.impl.cc : Afford::createOperations ()
+    def analyseObject(self, objectName, reduceSizes):
+        return self.client.affordance.affordance.analyseObject(objectName, reduceSizes)
 
-    ## \brief Get vertex points of all triangles of an affordance type.
+    # \brief Get vertex points of all triangles of an affordance type.
     #
     #   Returns the global position of of all vertices of the triangles
     #   of individual affordance obstacles of given type. Useful for
@@ -132,19 +137,18 @@ class AffordanceTool (object):
     #
     #  \param affordanceType name of the affordance type for which
     #         the triangle points will be provided.
-    def getAffordancePoints (self, affordanceType):
-        return self.client.affordance.affordance.getAffordancePoints \
-                (affordanceType)
+    def getAffordancePoints(self, affordanceType):
+        return self.client.affordance.affordance.getAffordancePoints(affordanceType)
 
-    ## \brief Get list of affordance types used in affordance analysis.
+    # \brief Get list of affordance types used in affordance analysis.
     #
     #  Helper function that returns a list of strings. Useful as many
     #  functions require an affordance type as input parameter, and the
     #  spelling (capital letters etc.) matters.
-    def getAffordanceTypes (self):
-        return self.client.affordance.affordance.getAffordanceTypes ()
+    def getAffordanceTypes(self):
+        return self.client.affordance.affordance.getAffordanceTypes()
 
-    ## \brief Get list of CollisionObstacle names corresponding to affordance objects
+    # \brief Get list of CollisionObstacle names corresponding to affordance objects
     #  of a scpecific type.
     #
     #  Helper function that returns a list of the reference collisionObstacles
@@ -155,10 +159,10 @@ class AffordanceTool (object):
     #
     #  \param affType The affordance type for which the reference obstacles will
     #         be provided.
-    def getAffRefObstacles (self, affType):
-        return self.client.affordance.affordance.getAffRefObstacles (affType)
+    def getAffRefObstacles(self, affType):
+        return self.client.affordance.affordance.getAffRefObstacles(affType)
 
-    ## \brief Load obstacles, visualise them in viewer and analyse them for affordances
+    # \brief Load obstacles, visualise them in viewer and analyse them for affordances
     #
     #  Loads obstacle model and saves it in problem solver. The obstacle is
     #  also shown in the viewer, and subsequently searched for affordance
@@ -175,20 +179,19 @@ class AffordanceTool (object):
     #  \param meshPackageName meshPackageName ros package containing the geometry files
     #         (collada, stl,...) if different from package
     #  \param guiOnly whether to control only gepetto-viewer-server
-    def loadObstacleModel (self, package, filename, prefix, \
-                  Viewer, meshPackageName=None, guiOnly=False,reduceSizes=[]):
-        Viewer.loadObstacleModel (package, filename, prefix, \
-            meshPackageName, guiOnly)
+    def loadObstacleModel(self, package, filename, prefix, Viewer, meshPackageName=None, guiOnly=False,
+                          reduceSizes=[]):
+        Viewer.loadObstacleModel(package, filename, prefix, meshPackageName, guiOnly)
         import re
-        objNames = self.client.basic.obstacle.getObstacleNames(True,False)
+        objNames = self.client.basic.obstacle.getObstacleNames(True, False)
         for name in objNames:
-          print("obs name ", name)
-          splt = re.split ('/', name)
-          if splt[0] == prefix :
-            self.analyseObject (name,reduceSizes)
+            print("obs name ", name)
+            splt = re.split('/', name)
+            if splt[0] == prefix:
+                self.analyseObject(name, reduceSizes)
         return
 
-    ## \brief Visualise all found affordance surfaces for an affordance type.
+    # \brief Visualise all found affordance surfaces for an affordance type.
     #
     #  For a given type of affordance, this function creates
     #  a group node of the same name, and adds nodes to this group.
@@ -207,34 +210,33 @@ class AffordanceTool (object):
     #  \Viewer viewer object to load affordance objects to visualiser
     #  \groupName name of group in the viewer that the objects will be added to
     #  \colour vector of length 4 (normalized rgba). Colours defined in the interval [0, 1]
-    def visualiseAllAffordances (self, affType, Viewer, colour):
-        if len(colour) < 4 : # if the colour is only rgb we suppose alpha = 1
-          colour = colour + [1]
-        self.deleteNode (str (affType), True, Viewer)
-        objs = self.getAffordancePoints (affType)
-        refs = self.getAffRefObstacles (affType)
-        Viewer.client.gui.createGroup (str (affType))
+    def visualiseAllAffordances(self, affType, Viewer, colour):
+        if len(colour) < 4:  # if the colour is only rgb we suppose alpha = 1
+            colour = colour + [1]
+        self.deleteNode(str(affType), True, Viewer)
+        objs = self.getAffordancePoints(affType)
+        refs = self.getAffRefObstacles(affType)
+        Viewer.client.gui.createGroup(str(affType))
         for aff in objs:
-          count = 0
-          for tri in aff:
-            Viewer.client.gui.addTriangleFace (str (affType) + '-' + \
-                 str (refs[objs.index (aff)]) + '.' + \
-                 str (objs.index (aff)) + '.' + str(count), \
-                 tri[0], tri[1], tri[2], [colour[0], colour[1], colour[2], colour[3]])
-            Viewer.client.gui.addToGroup (str (affType) + '-' + \
-                 str (refs[objs.index (aff)]) + '.' + \
-                 str (objs.index (aff)) + '.' + str(count), str (affType))
-            count += 1
+            count = 0
+            for tri in aff:
+                Viewer.client.gui.addTriangleFace(
+                    str(affType) + '-' + str(refs[objs.index(aff)]) + '.' + str(objs.index(aff)) + '.' + str(count),
+                    tri[0], tri[1], tri[2], [colour[0], colour[1], colour[2], colour[3]])
+                Viewer.client.gui.addToGroup(
+                    str(affType) + '-' + str(refs[objs.index(aff)]) + '.' + str(objs.index(aff)) + '.' + str(count),
+                    str(affType))
+                count += 1
         groupNodes = Viewer.client.gui.getGroupNodeList(Viewer.sceneName)
-        Viewer.client.gui.addToGroup (str (affType), Viewer.sceneName)
+        Viewer.client.gui.addToGroup(str(affType), Viewer.sceneName)
         # By default, oldest node is displayed in front. Removing and re-adding
         # object from scene assure that the new triangles are displayed on top
-        for groupNode in groupNodes :
-            Viewer.client.gui.removeFromGroup(groupNode,Viewer.sceneName)
-            Viewer.client.gui.addToGroup(groupNode,Viewer.sceneName)
+        for groupNode in groupNodes:
+            Viewer.client.gui.removeFromGroup(groupNode, Viewer.sceneName)
+            Viewer.client.gui.addToGroup(groupNode, Viewer.sceneName)
         return
 
-    ## \brief Visualise affordance surfaces of given type for one obstacle.
+    # \brief Visualise affordance surfaces of given type for one obstacle.
     #
     #  For a given affordance type and collisionObstacle, this function
     #  visualised the affordance surfaces and adds them as triangles into
@@ -257,39 +259,38 @@ class AffordanceTool (object):
     #  \param colour vector of length 4 (normalized rgba). Colours defined in the interval [0, 1]
     #  \param obstacleName Name of collision obstacle for which affordances
     #         will be visualised
-    def visualiseAffordances (self, affType, Viewer, colour, obstacleName=""):
-        if len(colour) < 4 : # if the colour is only rgb we suppose alpha = 1
-          colour = colour + [1]
+    def visualiseAffordances(self, affType, Viewer, colour, obstacleName=""):
+        if len(colour) < 4:  # if the colour is only rgb we suppose alpha = 1
+            colour = colour + [1]
         if obstacleName == "":
-          return self.visualiseAllAffordances (affType, Viewer, colour)
+            return self.visualiseAllAffordances(affType, Viewer, colour)
         else:
-          self.deleteAffordancesByTypeFromViewer (affType, Viewer, obstacleName)
-          nodes = Viewer.client.gui.getNodeList ()
-          if affType not in nodes: Viewer.client.gui.createGroup (str (affType))
-          objs = self.getAffordancePoints (affType)
-          refs = self.getAffRefObstacles (affType)
-          for aff in objs:
-            if refs[objs.index (aff)] == obstacleName:
-              count = 0
-              for tri in aff:
-                name = str (affType) + '-' + \
-                str (refs[objs.index (aff)]) + '.' + \
-         str (objs.index (aff)) + '.' + str(count)
-                Viewer.client.gui.addTriangleFace (name, \
-                        tri[0], tri[1], tri[2], [colour[0], colour[1], colour[2], colour[3]])
-                Viewer.client.gui.addToGroup (name, str (affType))
-                count += 1
-          groupNodes = Viewer.client.gui.getGroupNodeList(Viewer.sceneName)
-          Viewer.client.gui.addToGroup (str (affType), Viewer.sceneName)
-          # By default, oldest node is displayed in front. Removing and re-adding i
-          # object from scene assure that the new triangles are displayed on top
-          for groupNode in groupNodes :
-              Viewer.client.gui.removeFromGroup(groupNode,Viewer.sceneName)
-              Viewer.client.gui.addToGroup(groupNode,Viewer.sceneName)
+            self.deleteAffordancesByTypeFromViewer(affType, Viewer, obstacleName)
+            nodes = Viewer.client.gui.getNodeList()
+            if affType not in nodes:
+                Viewer.client.gui.createGroup(str(affType))
+            objs = self.getAffordancePoints(affType)
+            refs = self.getAffRefObstacles(affType)
+            for aff in objs:
+                if refs[objs.index(aff)] == obstacleName:
+                    count = 0
+                    for tri in aff:
+                        name = str(affType) + '-' + str(refs[objs.index(aff)]) + '.' + str(
+                            objs.index(aff)) + '.' + str(count)
+                        Viewer.client.gui.addTriangleFace(name, tri[0], tri[1], tri[2],
+                                                          [colour[0], colour[1], colour[2], colour[3]])
+                        Viewer.client.gui.addToGroup(name, str(affType))
+                        count += 1
+            groupNodes = Viewer.client.gui.getGroupNodeList(Viewer.sceneName)
+            Viewer.client.gui.addToGroup(str(affType), Viewer.sceneName)
+            # By default, oldest node is displayed in front. Removing and re-adding i
+            # object from scene assure that the new triangles are displayed on top
+            for groupNode in groupNodes:
+                Viewer.client.gui.removeFromGroup(groupNode, Viewer.sceneName)
+                Viewer.client.gui.addToGroup(groupNode, Viewer.sceneName)
         return
 
-
-    ## \brief Delete affordances for given object.
+    # \brief Delete affordances for given object.
     #
     #  Deletes affordance objects both from problem solver and from viewer.
     #  If no objectName provided, all affordances will be deleted.
@@ -297,11 +298,11 @@ class AffordanceTool (object):
     #  \param Viewer viewer object to erase affordance objects from visualiser
     #  \param obstacleName name of obstacle the affordances of which will
     #         be deleted.
-    def deleteAffordances (self, Viewer, obstacleName=""):
-        self.deleteAffordancesFromViewer (Viewer, obstacleName)
-        return self.client.affordance.affordance.deleteAffordances (obstacleName)
+    def deleteAffordances(self, Viewer, obstacleName=""):
+        self.deleteAffordancesFromViewer(Viewer, obstacleName)
+        return self.client.affordance.affordance.deleteAffordances(obstacleName)
 
-    ## \brief Delete affordance surfaces from viewer.
+    # \brief Delete affordance surfaces from viewer.
     #
     #  For a given collisionObstacle, delete all nodes in viewer that
     #  correspond to its affordance surfaces. The function goes through,
@@ -311,28 +312,28 @@ class AffordanceTool (object):
     # \param Viewer viewer object to erase affordance objects from visualiser
     # \param obstacleName Name of collision obstacle for which affordances
     #        will be deleted
-    def deleteAffordancesFromViewer (self, Viewer, obstacleName=""):
-        affs = self.getAffordanceTypes ()
+    def deleteAffordancesFromViewer(self, Viewer, obstacleName=""):
+        affs = self.getAffordanceTypes()
         if obstacleName == "":
             for aff in affs:
-                self.deleteNode (aff, True, Viewer)
+                self.deleteNode(aff, True, Viewer)
         else:
-           import re
-           for aff in affs:
-             refs = self.getAffRefObstacles (aff)
-             count = 0
-             while count < len(refs):
-               if refs[count] == obstacleName:
-                 toDelete = aff + '-' + refs[count]
-                 nodes = Viewer.client.gui.getGroupNodeList(aff)
-                 for node in nodes:
-                   splt = re.split ('\.', node)
-                   if splt[0] == toDelete:
-                     self.deleteNode (node, True, Viewer)
-               count += 1
+            import re
+            for aff in affs:
+                refs = self.getAffRefObstacles(aff)
+                count = 0
+                while count < len(refs):
+                    if refs[count] == obstacleName:
+                        toDelete = aff + '-' + refs[count]
+                        nodes = Viewer.client.gui.getGroupNodeList(aff)
+                        for node in nodes:
+                            splt = re.split('\.', node)
+                            if splt[0] == toDelete:
+                                self.deleteNode(node, True, Viewer)
+                    count += 1
         return
 
-    ## \brief Delete affordances of given type for a collisionObstacle.
+    # \brief Delete affordances of given type for a collisionObstacle.
     #
     #  If no objectName provided, all affordances of given type will be
     #  deleted. Deleted affordance objects from problem solver and viewer.
@@ -341,11 +342,11 @@ class AffordanceTool (object):
     #  \param Viewer viewer object to erase affordance objects from visualiser
     #  \param obstacleName name of obstacle the affordances of which will
     #         be deleted.
-    def deleteAffordancesByType (self, affordanceType, Viewer, obstacleName=""):
-        self.deleteAffordancesByTypeFromViewer (affordanceType, Viewer, obstacleName)
+    def deleteAffordancesByType(self, affordanceType, Viewer, obstacleName=""):
+        self.deleteAffordancesByTypeFromViewer(affordanceType, Viewer, obstacleName)
         return self.client.affordance.affordance.deleteAffordancesByType(affordanceType, obstacleName)
 
-    ## \brief Delete affordance objects of given type from viewer for a collisionObstacle
+    # \brief Delete affordance objects of given type from viewer for a collisionObstacle
     #
     #  For a given collisionObstacle, delete nodes in viewer that correspond
     #  to a specific affordance type. The function goes through, for all
@@ -358,39 +359,39 @@ class AffordanceTool (object):
     #    \param Viewer viewer object to erase affordance objects from visualiser
     #  \param obstacleName name of obstacle the affordances of which will
     #         be deleted.
-    def deleteAffordancesByTypeFromViewer (self, affordanceType, Viewer, obstacleName=""):
+    def deleteAffordancesByTypeFromViewer(self, affordanceType, Viewer, obstacleName=""):
         if obstacleName == "":
-          Viewer.client.gui.deleteNode (affordanceType, True)
+            Viewer.client.gui.deleteNode(affordanceType, True)
         else:
-           import re
-           affs = self.getAffordanceTypes ()
-           for aff in affs:
-             if aff == affordanceType:
-               refs = self.getAffRefObstacles (aff)
-               count = 0
-               while count < len(refs):
-                 if refs[count] == obstacleName:
-                   toDelete = aff + '-' + refs[count]
-                   nodes = Viewer.client.gui.getNodeList()
-                   for node in nodes:
-                     splt = re.split ('\.', node)
-                     if splt[0] == toDelete:
-                       self.deleteNode (node, True, Viewer)
-                 count += 1
+            import re
+            affs = self.getAffordanceTypes()
+            for aff in affs:
+                if aff == affordanceType:
+                    refs = self.getAffRefObstacles(aff)
+                    count = 0
+                    while count < len(refs):
+                        if refs[count] == obstacleName:
+                            toDelete = aff + '-' + refs[count]
+                            nodes = Viewer.client.gui.getNodeList()
+                            for node in nodes:
+                                splt = re.split('\.', node)
+                                if splt[0] == toDelete:
+                                    self.deleteNode(node, True, Viewer)
+                        count += 1
         return
 
-    ## \brief Delete node from visualiser
+    # \brief Delete node from visualiser
     #
     # \param nodeName name of node to be deleted
     # \param all boolean that determines ...?
     # \param Viewer viewer object used to execute deletion function
-    def deleteNode (self, nodeName, all, Viewer):
-        return Viewer.client.gui.deleteNode (nodeName, all)
+    def deleteNode(self, nodeName, all, Viewer):
+        return Viewer.client.gui.deleteNode(nodeName, all)
 
         # get list of obstacles in problem solver.
         #
         # \param collision  whether to return obstacle for collision (boolean)
         # \param distance whether to return obstacles for distance
         #  computation (boolean).
-    def getObstacleNames (self, collision, distance):
+    def getObstacleNames(self, collision, distance):
         return self.client.basic.obstacle.getObstacleNames(collision, distance)

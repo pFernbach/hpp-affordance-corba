@@ -1,2 +1,2 @@
-from .client import Client
-from .robot import Robot
+from .client import Client  # noqa
+from .robot import Robot  # noqa
