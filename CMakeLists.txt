@@ -16,21 +16,21 @@
 # <http://www.gnu.org/licenses/>.
 
 # Requires at least CMake 2.6 to configure the package.
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-
-SET(CXX_DISABLE_WERROR true)
-
-INCLUDE(cmake/base.cmake)
-INCLUDE(cmake/idl.cmake)
-INCLUDE(cmake/hpp.cmake)
-INCLUDE(cmake/python.cmake)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
 SET(PROJECT_NAME hpp-affordance-corba)
 SET(PROJECT_DESCRIPTION "Corba server for Humanoid Path Planner Affordance applications")
 
+SET(CXX_DISABLE_WERROR true)
+
+INCLUDE(cmake/hpp.cmake)
+INCLUDE(cmake/idl.cmake)
+INCLUDE(cmake/python.cmake)
+
 SET(CUSTOM_HEADER_DIR hpp/corbaserver/affordance)
 
-SETUP_HPP_PROJECT ()
+COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
+PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
 
 LIST(APPEND PKG_CONFIG_ADDITIONAL_VARIABLES cmake_plugin)
 
@@ -60,7 +60,7 @@ PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 ADD_SUBDIRECTORY(include/${CUSTOM_HEADER_DIR})
 ADD_SUBDIRECTORY(src)
 
-CONFIG_FILES (include/hpp/corbaserver/affordance/doc.hh)
+CONFIG_FILES (include/${CUSTOM_HEADER_DIR}/doc.hh)
 
 SET(CATKIN_PACKAGE_SHARE_DESTINATION
   ${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME})
@@ -95,5 +95,3 @@ install(FILES
   data/meshes/hyq/hyq_trunk_large.stl
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/meshes/hyq
   )
-
-SETUP_PROJECT_FINALIZE()
