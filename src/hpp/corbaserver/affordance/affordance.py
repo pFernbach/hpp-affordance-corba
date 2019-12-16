@@ -28,9 +28,13 @@ class CorbaClient:
     """
     Container for corba clients to various interfaces.
     """
-    def __init__(self):
-        self.basic = BasicClient()
-        self.affordance = AffClient()
+    def __init__(self, context=None):
+        if context==None:
+            self.basic = BasicClient()
+            self.affordance = AffClient()
+        else:
+            self.basic = BasicClient(context=context)
+            self.affordance = AffClient(context=context)
 
 
 # \brief Load and handle an AffordanceTool for analysis of the environment.
@@ -40,8 +44,8 @@ class CorbaClient:
 # analysis tools more intuitive for the user.
 class AffordanceTool(object):
     # Constructor
-    def __init__(self):
-        self.client = CorbaClient()
+    def __init__(self, context=None):
+        self.client = CorbaClient(context)
 
     # \brief Remove an obstacle from outer objects of a joint body.
     #
