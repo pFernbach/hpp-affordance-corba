@@ -38,20 +38,19 @@ namespace hpp
     void Server::startCorbaServer(const std::string& contextId,
 				  const std::string& contextKind)
     {
-      bool mThd = parent()->multiThread();
-      impl_ = new corba::Server <impl::Afford>   (0, NULL, mThd, "child");
-
+      initializeTplServer (impl_, contextId, contextKind, name(), "affordance");
       impl_->implementation ().setServer (this);
-
-      if (impl_->startCorbaServer(contextId, contextKind,
-                                  "affordanceCorba", "affordance") != 0) {
-	HPP_THROW_EXCEPTION (hpp::Exception, "Failed to start affordance corba server.");
-      }
 
       // TODO this a very fragile. It works because startCorbaServer is called
       // after setProblemSolverMap in hpp::corbaServer::Server::getContext
       // implementation (file hpp-corbaserver/src/server.cc)
       impl_->implementation().resetAffordanceConfig();
+    }
+
+    ::CORBA::Object_ptr Server::servant(const std::string& name) const
+    {
+      if (name == "affordance") return impl_->implementation()._this();
+      throw std::invalid_argument ("No servant " + name);
     }
   } // namespace affordanceCorba
 } // namespace hpp
