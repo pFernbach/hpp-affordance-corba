@@ -36,4 +36,4 @@ class Client(_Parent):
                 url = "corbaloc:iiop:<host>:<port>/NameService"
     """
         self._initOrb(url)
-        self._makeClients("affordanceCorba", self.defaultClients, context)
+        self._makeClients("affordance", self.defaultClients, context)

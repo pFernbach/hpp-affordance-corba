@@ -39,6 +39,8 @@ namespace hpp
 
       std::string name () const;
 
+      ::CORBA::Object_ptr servant (const std::string& name) const;
+
     private:
       corba::Server <impl::Afford>* impl_;
     };
