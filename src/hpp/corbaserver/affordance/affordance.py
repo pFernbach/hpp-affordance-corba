@@ -175,17 +175,14 @@ class AffordanceTool(object):
     #  This search works without problems only if the prefix parameter
     #  does not contain the '/' character!
     #
-    #  \param package ros package containing the urdf file
-    #  \param filename filename name of the urdf file without extension
+    #  \param filename name of the urdf file, may contain "package://"
     #  \param prefix prefix added to object names in case the same file
     #         is loaded several times. It should not cointain the '/' character
     #  \param Viewer viewer object to load loaded obstacles to visualiser
-    #  \param meshPackageName meshPackageName ros package containing the geometry files
-    #         (collada, stl,...) if different from package
     #  \param guiOnly whether to control only gepetto-viewer-server
-    def loadObstacleModel(self, package, filename, prefix, Viewer, meshPackageName=None, guiOnly=False,
+    def loadObstacleModel(self, filename, prefix, Viewer, guiOnly=False,
                           reduceSizes=[]):
-        Viewer.loadObstacleModel(package, filename, prefix, meshPackageName, guiOnly)
+        Viewer.loadObstacleModel(filename, prefix, guiOnly)
         import re
         objNames = self.client.basic.obstacle.getObstacleNames(True, False)
         for name in objNames:
