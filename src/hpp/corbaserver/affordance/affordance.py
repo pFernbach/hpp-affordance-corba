@@ -229,12 +229,13 @@ class AffordanceTool(object):
                     str(affType))
                 count += 1
         groupNodes = Viewer.client.gui.getGroupNodeList(Viewer.sceneName)
-        Viewer.client.gui.addToGroup(str(affType), Viewer.sceneName)
-        # By default, oldest node is displayed in front. Removing and re-adding
-        # object from scene assure that the new triangles are displayed on top
-        for groupNode in groupNodes:
-            Viewer.client.gui.removeFromGroup(groupNode, Viewer.sceneName)
-            Viewer.client.gui.addToGroup(groupNode, Viewer.sceneName)
+        if groupNodes is not None:
+            Viewer.client.gui.addToGroup(str(affType), Viewer.sceneName)
+            # By default, oldest node is displayed in front. Removing and re-adding
+            # object from scene assure that the new triangles are displayed on top
+            for groupNode in groupNodes:
+                Viewer.client.gui.removeFromGroup(groupNode, Viewer.sceneName)
+                Viewer.client.gui.addToGroup(groupNode, Viewer.sceneName)
         return
 
     # \brief Visualise affordance surfaces of given type for one obstacle.
