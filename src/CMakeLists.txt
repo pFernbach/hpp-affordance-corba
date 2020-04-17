@@ -1,5 +1,5 @@
-# Copyright (c) 2016 CNRS
-# Author: Anna Seppala
+# Copyright (c) 2016, 2020, CNRS
+# Author: Anna Seppala, Guilhem Saurel
 #
 # This file is part of hpp-corbaserver.
 # hpp-corbaserver is free software: you can redistribute it
@@ -15,7 +15,6 @@
 # hpp-corbaserver.  If not, see
 # <http://www.gnu.org/licenses/>.
 
-SET(LIBRARY_NAME ${PROJECT_NAME})
 SET(IDL_SOURCES
   affordance
   )
@@ -25,12 +24,12 @@ OMNIIDL_INCLUDE_DIRECTORIES(
 		${HPP_CORBASERVER_DATAROOTDIR}/idl
 		${CMAKE_SOURCE_DIR}/idl
 		)
-INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/src)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/hpp/corbaserver/affordance)
 FOREACH(IDL ${IDL_SOURCES})
-  GENERATE_IDL_CPP (${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance
+  GENERATE_IDL_CPP(${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance
     HEADER_SUFFIX -idl.hh)
-  GENERATE_IDL_PYTHON (${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance
+  GENERATE_IDL_PYTHON(${IDL} ${CMAKE_SOURCE_DIR}/idl/hpp/corbaserver/affordance
     ENABLE_DOCSTRING
     STUBS hpp_stubs.affordance
     ARGUMENTS
@@ -58,27 +57,18 @@ HPP_ADD_SERVER_PLUGIN(affordance-corba
   affordance.impl.hh
   affordance.impl.cc
   server.cc
-  PKG_CONFIG_DEPENDENCIES omniORB4 hpp-corbaserver hpp-affordance hpp-template-corba hpp-util
-)
+  LINK_DEPENDENCIES hpp-corbaserver::hpp-corbaserver
+  PKG_CONFIG_DEPENDENCIES omniORB4
+  )
 
-ADD_DEPENDENCIES (affordance-corba generate_idl_cpp)
-ADD_DEPENDENCIES (affordance-corba generate_idl_python)
+ADD_DEPENDENCIES(affordance-corba generate_idl_cpp)
+ADD_DEPENDENCIES(affordance-corba generate_idl_python)
 
-PYTHON_INSTALL_ON_SITE(
-  hpp/corbaserver/affordance corba.py ${PYTHON_SITELIB}
-  )
-PYTHON_INSTALL_ON_SITE(
-  hpp/corbaserver/affordance __init__.py ${PYTHON_SITELIB}
-  )
-PYTHON_INSTALL_ON_SITE(
-  hpp/corbaserver/affordance client.py ${PYTHON_SITELIB}
-  )
-PYTHON_INSTALL_ON_SITE(
-  hpp/corbaserver/affordance affordance.py ${PYTHON_SITELIB}
-  )
-PYTHON_INSTALL_ON_SITE (
-	hpp/corbaserver/affordance robot.py ${PYTHON_SITELIB}
-	)
+PYTHON_INSTALL_ON_SITE(hpp/corbaserver/affordance __init__.py)
+PYTHON_INSTALL_ON_SITE(hpp/corbaserver/affordance affordance.py)
+PYTHON_INSTALL_ON_SITE(hpp/corbaserver/affordance client.py)
+PYTHON_INSTALL_ON_SITE(hpp/corbaserver/affordance corba.py)
+PYTHON_INSTALL_ON_SITE(hpp/corbaserver/affordance robot.py)
 
 INSTALL(
   FILES
@@ -87,7 +77,7 @@ INSTALL(
 )
 
 # Generate and install python code for each dependency idl file
-FOREACH (IDL ${HPP_CORBASERVER_IDL_SOURCES})
+FOREACH(IDL ${HPP_CORBASERVER_IDL_SOURCES})
   ADD_CUSTOM_COMMAND(
     OUTPUT
     ${CMAKE_CURRENT_BINARY_DIR}/hpp/corbaserver/affordance/${IDL}_idl.py
@@ -113,14 +103,3 @@ FOREACH (IDL ${HPP_CORBASERVER_IDL_SOURCES})
     DESTINATION ${PYTHON_SITELIB}/hpp/corbaserver/affordance
     )
 ENDFOREACH()
-
-
-# Standalone corba server
-ADD_EXECUTABLE (hpp-affordance-server hpp-affordance-corba.cc)
-
-PKG_CONFIG_USE_DEPENDENCY(hpp-affordance-server hpp-corbaserver)
-PKG_CONFIG_USE_DEPENDENCY(hpp-affordance-server hpp-template-corba)
-PKG_CONFIG_USE_DEPENDENCY(hpp-affordance-server hpp-util)
-PKG_CONFIG_USE_DEPENDENCY(hpp-affordance-server hpp-affordance)
-
-INSTALL (TARGETS hpp-affordance-server DESTINATION ${CMAKE_INSTALL_BINDIR})
