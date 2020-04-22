@@ -57,7 +57,7 @@ HPP_ADD_SERVER_PLUGIN(affordance-corba
   affordance.impl.hh
   affordance.impl.cc
   server.cc
-  LINK_DEPENDENCIES hpp-corbaserver::hpp-corbaserver
+  LINK_DEPENDENCIES hpp-corbaserver::hpp-corbaserver hpp-affordance::hpp-affordance
   PKG_CONFIG_DEPENDENCIES omniORB4
   )
 
